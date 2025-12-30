@@ -492,8 +492,10 @@ function showFeedback(isCorrect, acceptedAnswers, qNum) {
             moveEl.innerHTML = `<div class="box-move promoted">📈 Promoted to Box ${boxChange.newBox} (${boxLabels[boxChange.newBox]})</div>`;
         } else if (boxChange.newBox < boxChange.oldBox) {
             moveEl.innerHTML = `<div class="box-move demoted">📉 Back to Box 1 (Learning)</div>`;
-        } else {
+        } else if (boxChange.newBox === 5 && isCorrect) {
             moveEl.innerHTML = `<div class="box-move promoted">⭐ Already at Box 5 (Mastered)</div>`;
+        } else {
+            moveEl.innerHTML = `<div class="box-move demoted">📉 Stays in Box 1 (Learning)</div>`;
         }
     }
     
