@@ -29,6 +29,9 @@
         .btn-success:hover { background: #38a169; }
         .btn-secondary { background: #718096; color: white; }
         .btn-secondary:hover { background: #4a5568; }
+        .btn-danger { background: #e53e3e; color: white; }
+        .btn-danger:hover { background: #c53030; }
+        .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
         .buttons { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
         .feedback { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; }
         .feedback.correct { background: #c6f6d5; border: 2px solid #48bb78; display: block; }
@@ -45,7 +48,7 @@
         .completion h2 { color: #1a202c; margin-bottom: 20px; }
         .completion .score { font-size: 3rem; font-weight: bold; color: #4299e1; margin-bottom: 10px; }
         .completion p { color: #718096; margin-bottom: 20px; }
-        .mode-toggle { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .mode-toggle { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .mode-btn { padding: 8px 16px; background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
         .mode-btn.active { background: white; color: #1a365d; border-color: white; }
         .mode-btn:hover:not(.active) { background: rgba(255,255,255,0.2); }
@@ -64,15 +67,76 @@
         .result-fail { color: #c53030; }
         .result-icon { font-size: 4rem; margin-bottom: 20px; }
         .result-message { font-size: 1.1rem; margin-bottom: 15px; }
+
+        .stats-toggle { display: flex; justify-content: center; margin-bottom: 15px; }
+        .stats-toggle-btn { padding: 6px 14px; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 15px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+        .stats-toggle-btn:hover { background: rgba(255,255,255,0.25); }
+        .stats-toggle-btn.expanded { background: rgba(255,255,255,0.3); }
+        
+        .stats-panel { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px; color: white; display: none; }
+        .stats-panel.expanded { display: block; }
+        .stats-panel h3 { font-size: 1rem; margin-bottom: 15px; text-align: center; }
+        
+        .leitner-boxes { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; }
+        .leitner-box { flex: 1; text-align: center; padding: 12px 8px; border-radius: 8px; font-size: 0.75rem; }
+        .leitner-box .box-count { font-size: 1.3rem; font-weight: bold; display: block; margin-bottom: 4px; }
+        .leitner-box .box-label { opacity: 0.9; }
+        .box-1 { background: #fc8181; color: #fff; }
+        .box-2 { background: #f6ad55; color: #fff; }
+        .box-3 { background: #faf089; color: #744210; }
+        .box-4 { background: #68d391; color: #fff; }
+        .box-5 { background: #ffd700; color: #744210; }
+        
+        .overall-stats { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .overall-stat { text-align: center; }
+        .overall-stat-value { font-size: 1.2rem; font-weight: bold; }
+        .overall-stat-label { font-size: 0.75rem; opacity: 0.8; }
+        
+        .stats-actions { text-align: center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); }
+        
+        .box-indicator { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 10px; }
+        .box-indicator.box-1 { background: #fc8181; color: #fff; }
+        .box-indicator.box-2 { background: #f6ad55; color: #fff; }
+        .box-indicator.box-3 { background: #faf089; color: #744210; }
+        .box-indicator.box-4 { background: #68d391; color: #fff; }
+        .box-indicator.box-5 { background: #ffd700; color: #744210; }
+        
+        .box-move { font-size: 0.85rem; margin-top: 8px; padding: 6px 12px; border-radius: 6px; display: inline-block; }
+        .box-move.promoted { background: #c6f6d5; color: #276749; }
+        .box-move.demoted { background: #fed7d7; color: #c53030; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🇺🇸 US Civics Test Flash Cards</h1>
         <p class="subtitle">2025 Naturalization Test - 128 Questions</p>
+        
         <div class="mode-toggle">
-            <button class="mode-btn active" onclick="setMode('study')">Study All Questions</button>
+            <button class="mode-btn active" onclick="setMode('study')">Study Mode</button>
             <button class="mode-btn" onclick="setMode('test')">Practice Test</button>
+        </div>
+        
+        <div class="stats-toggle">
+            <button class="stats-toggle-btn" id="statsToggleBtn" onclick="toggleStatsPanel()">📊 Progress</button>
+        </div>
+        
+        <div class="stats-panel" id="statsPanel">
+            <h3>Leitner Box System</h3>
+            <div class="leitner-boxes">
+                <div class="leitner-box box-1"><span class="box-count" id="box1Count">0</span><span class="box-label">Learning</span></div>
+                <div class="leitner-box box-2"><span class="box-count" id="box2Count">0</span><span class="box-label">Review</span></div>
+                <div class="leitner-box box-3"><span class="box-count" id="box3Count">0</span><span class="box-label">Familiar</span></div>
+                <div class="leitner-box box-4"><span class="box-count" id="box4Count">0</span><span class="box-label">Known</span></div>
+                <div class="leitner-box box-5"><span class="box-count" id="box5Count">0</span><span class="box-label">Mastered</span></div>
+            </div>
+            <div class="overall-stats">
+                <div class="overall-stat"><div class="overall-stat-value" id="totalAnswered">0</div><div class="overall-stat-label">Total Answered</div></div>
+                <div class="overall-stat"><div class="overall-stat-value" id="overallAccuracy">0%</div><div class="overall-stat-label">Accuracy</div></div>
+                <div class="overall-stat"><div class="overall-stat-value" id="studyStreak">0</div><div class="overall-stat-label">Day Streak 🔥</div></div>
+            </div>
+            <div class="stats-actions">
+                <button class="btn btn-danger btn-sm" onclick="confirmResetProgress()">Reset All Progress</button>
+            </div>
         </div>
         
         <div class="test-progress" id="testProgress" style="display: none;">
@@ -96,6 +160,7 @@
             </div>
             <div class="feedback" id="feedback">
                 <div class="feedback-title" id="feedbackTitle"></div>
+                <div id="boxMoveIndicator"></div>
                 <div class="accepted-answers" id="acceptedAnswers"></div>
             </div>
             <div class="buttons" id="nextButtons" style="display: none;">
@@ -109,15 +174,150 @@
     </div>
     <script src="questions.js"></script>
     <script>
+const STORAGE_KEY = 'civicsProgress';
+const PASS_THRESHOLD = 12;
+const FAIL_THRESHOLD = 9;
+const TEST_QUESTIONS = 20;
+
 let questions = [];
 let currentIndex = 0;
 let correct = 0;
 let incorrect = 0;
 let answered = false;
 let mode = 'study';
-const PASS_THRESHOLD = 12;
-const FAIL_THRESHOLD = 9;
-const TEST_QUESTIONS = 20;
+let progressData = null;
+
+function loadProgress() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            progressData = JSON.parse(saved);
+            if (!progressData.questionProgress) progressData.questionProgress = {};
+            if (!progressData.stats) progressData.stats = { totalCorrect: 0, totalWrong: 0, lastStudyDate: null, studyStreak: 0 };
+        } else {
+            progressData = { questionProgress: {}, stats: { totalCorrect: 0, totalWrong: 0, lastStudyDate: null, studyStreak: 0 } };
+        }
+    } catch (e) {
+        progressData = { questionProgress: {}, stats: { totalCorrect: 0, totalWrong: 0, lastStudyDate: null, studyStreak: 0 } };
+    }
+    updateStreak();
+}
+
+function saveProgress() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progressData));
+    } catch (e) {}
+}
+
+function getQuestionBox(qNum) {
+    return progressData.questionProgress[qNum]?.box || 1;
+}
+
+function updateQuestionBox(qNum, isCorrect) {
+    if (!progressData.questionProgress[qNum]) {
+        progressData.questionProgress[qNum] = { box: 1, correct: 0, wrong: 0 };
+    }
+    const qp = progressData.questionProgress[qNum];
+    const oldBox = qp.box;
+    
+    if (isCorrect) {
+        qp.correct++;
+        qp.box = Math.min(5, qp.box + 1);
+        progressData.stats.totalCorrect++;
+    } else {
+        qp.wrong++;
+        qp.box = 1;
+        progressData.stats.totalWrong++;
+    }
+    
+    saveProgress();
+    return { oldBox, newBox: qp.box };
+}
+
+function updateStreak() {
+    const today = new Date().toDateString();
+    const lastDate = progressData.stats.lastStudyDate;
+    
+    if (lastDate !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        if (lastDate === yesterday.toDateString()) {
+            progressData.stats.studyStreak++;
+        } else if (lastDate !== today) {
+            progressData.stats.studyStreak = 1;
+        }
+        progressData.stats.lastStudyDate = today;
+        saveProgress();
+    }
+}
+
+function getBoxCounts() {
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    allQuestions.forEach(q => {
+        const box = getQuestionBox(q.num);
+        counts[box]++;
+    });
+    return counts;
+}
+
+function updateStatsPanel() {
+    const counts = getBoxCounts();
+    document.getElementById('box1Count').textContent = counts[1];
+    document.getElementById('box2Count').textContent = counts[2];
+    document.getElementById('box3Count').textContent = counts[3];
+    document.getElementById('box4Count').textContent = counts[4];
+    document.getElementById('box5Count').textContent = counts[5];
+    
+    const total = progressData.stats.totalCorrect + progressData.stats.totalWrong;
+    const accuracy = total > 0 ? Math.round((progressData.stats.totalCorrect / total) * 100) : 0;
+    
+    document.getElementById('totalAnswered').textContent = total;
+    document.getElementById('overallAccuracy').textContent = accuracy + '%';
+    document.getElementById('studyStreak').textContent = progressData.stats.studyStreak;
+}
+
+function toggleStatsPanel() {
+    const panel = document.getElementById('statsPanel');
+    const btn = document.getElementById('statsToggleBtn');
+    const isExpanded = panel.classList.toggle('expanded');
+    btn.classList.toggle('expanded', isExpanded);
+    btn.textContent = isExpanded ? '📊 Progress ▲' : '📊 Progress';
+    if (isExpanded) updateStatsPanel();
+}
+
+function confirmResetProgress() {
+    if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        progressData = { questionProgress: {}, stats: { totalCorrect: 0, totalWrong: 0, lastStudyDate: new Date().toDateString(), studyStreak: 1 } };
+        saveProgress();
+        updateStatsPanel();
+        restartQuiz();
+    }
+}
+
+function selectWeightedQuestions() {
+    const weighted = [];
+    allQuestions.forEach(q => {
+        const box = getQuestionBox(q.num);
+        const weight = 6 - box;
+        for (let i = 0; i < weight; i++) {
+            weighted.push(q);
+        }
+    });
+    
+    const selected = [];
+    const usedNums = new Set();
+    const shuffled = shuffleArray(weighted);
+    
+    for (const q of shuffled) {
+        if (!usedNums.has(q.num)) {
+            usedNums.add(q.num);
+            selected.push(q);
+        }
+    }
+    
+    return selected;
+}
 
 function setMode(m) {
     mode = m;
@@ -140,7 +340,7 @@ function initQuiz() {
     if (mode === 'test') {
         questions = shuffleArray(allQuestions).slice(0, TEST_QUESTIONS);
     } else {
-        questions = shuffleArray(allQuestions);
+        questions = selectWeightedQuestions();
     }
     currentIndex = 0;
     correct = 0;
@@ -208,7 +408,7 @@ function showTestResult(passed) {
             <p class="result-message">You did not pass this practice test.</p>
             <div class="score result-fail">${correct} correct / ${incorrect} wrong</div>
             <p>You needed ${PASS_THRESHOLD} correct answers but got ${incorrect} wrong (max ${FAIL_THRESHOLD}).</p>
-            <p style="margin-top: 15px; color: #718096;">Don't worry! Use "Study All Questions" mode to review, then try again.</p>
+            <p style="margin-top: 15px; color: #718096;">Don't worry! Use "Study Mode" to review, then try again.</p>
             <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-secondary" onclick="setMode('study')">Study Mode</button>
                 <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
@@ -224,13 +424,20 @@ function showQuestion() {
     }
     const q = questions[currentIndex];
     const totalQ = questions.length;
-    document.getElementById('questionNumber').textContent = mode === 'test' 
-        ? `Question ${currentIndex + 1} of ${totalQ}`
-        : `Question ${currentIndex + 1} of ${totalQ} (Original #${q.num})`;
+    const box = getQuestionBox(q.num);
+    const boxLabel = ['', 'Learning', 'Review', 'Familiar', 'Known', 'Mastered'][box];
+    
+    if (mode === 'test') {
+        document.getElementById('questionNumber').innerHTML = `Question ${currentIndex + 1} of ${totalQ}`;
+    } else {
+        document.getElementById('questionNumber').innerHTML = `Question ${currentIndex + 1} of ${totalQ} (Original #${q.num}) <span class="box-indicator box-${box}">${boxLabel}</span>`;
+    }
+    
     document.getElementById('questionText').textContent = q.q;
     document.getElementById('answerInput').value = '';
     document.getElementById('answerInput').disabled = false;
     document.getElementById('feedback').className = 'feedback';
+    document.getElementById('boxMoveIndicator').innerHTML = '';
     document.getElementById('submitButtons').style.display = 'flex';
     document.getElementById('nextButtons').style.display = 'none';
     document.getElementById('currentNum').textContent = currentIndex + 1;
@@ -257,24 +464,39 @@ function checkAnswer() {
         const norm = normalizeAnswer(ans);
         return norm === userAnswer || userAnswer.includes(norm) || norm.includes(userAnswer);
     });
-    showFeedback(isCorrect, q.a);
+    showFeedback(isCorrect, q.a, q.num);
 }
 
 function showAnswer() {
     if (answered) return;
-    showFeedback(false, questions[currentIndex].a);
+    showFeedback(false, questions[currentIndex].a, questions[currentIndex].num);
 }
 
-function showFeedback(isCorrect, acceptedAnswers) {
+function showFeedback(isCorrect, acceptedAnswers, qNum) {
     answered = true;
     if (isCorrect) correct++; else incorrect++;
     document.getElementById('correctCount').textContent = correct;
     document.getElementById('incorrectCount').textContent = incorrect;
     updateTestProgress();
     
+    const boxChange = updateQuestionBox(qNum, isCorrect);
+    
     const feedback = document.getElementById('feedback');
     feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
     document.getElementById('feedbackTitle').textContent = isCorrect ? '✓ Correct!' : '✗ Incorrect';
+    
+    if (mode === 'study') {
+        const boxLabels = ['', 'Learning', 'Review', 'Familiar', 'Known', 'Mastered'];
+        const moveEl = document.getElementById('boxMoveIndicator');
+        if (boxChange.newBox > boxChange.oldBox) {
+            moveEl.innerHTML = `<div class="box-move promoted">📈 Promoted to Box ${boxChange.newBox} (${boxLabels[boxChange.newBox]})</div>`;
+        } else if (boxChange.newBox < boxChange.oldBox) {
+            moveEl.innerHTML = `<div class="box-move demoted">📉 Back to Box 1 (Learning)</div>`;
+        } else {
+            moveEl.innerHTML = `<div class="box-move promoted">⭐ Already at Box 5 (Mastered)</div>`;
+        }
+    }
+    
     const uniqueAnswers = [...new Set(acceptedAnswers)];
     document.getElementById('acceptedAnswers').innerHTML = uniqueAnswers.length > 0 
         ? '<h4>Accepted answers:</h4><ul>' + uniqueAnswers.map(a => '<li>' + a + '</li>').join('') + '</ul>'
@@ -282,6 +504,8 @@ function showFeedback(isCorrect, acceptedAnswers) {
     document.getElementById('answerInput').disabled = true;
     document.getElementById('submitButtons').style.display = 'none';
     document.getElementById('nextButtons').style.display = 'flex';
+    
+    updateStatsPanel();
 }
 
 function nextQuestion() {
@@ -321,11 +545,13 @@ function showCompletion() {
             </div>
         `;
     } else {
+        const counts = getBoxCounts();
         content.innerHTML = `
-            <h2>🎉 Practice Complete!</h2>
+            <h2>🎉 Session Complete!</h2>
             <div class="score">${pct}%</div>
-            <p>You answered ${correct} out of ${total} questions correctly.</p>
-            <button class="btn btn-primary" onclick="restartQuiz()" style="margin-top: 20px;">Practice Again</button>
+            <p>You answered ${correct} out of ${total} questions correctly this session.</p>
+            <p style="margin-top: 15px; color: #718096;">Box 5 (Mastered): ${counts[5]} of 128 questions</p>
+            <button class="btn btn-primary" onclick="restartQuiz()" style="margin-top: 20px;">Continue Studying</button>
         `;
     }
 }
@@ -341,6 +567,7 @@ document.getElementById('answerInput').addEventListener('keypress', function(e) 
     }
 });
 
+loadProgress();
 initQuiz();
     </script>
 </body>
