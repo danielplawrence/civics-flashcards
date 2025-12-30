@@ -77,10 +77,16 @@
         .stats-panel.expanded { display: block; }
         .stats-panel h3 { font-size: 1rem; margin-bottom: 15px; text-align: center; }
         
-        .leitner-boxes { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; }
-        .leitner-box { flex: 1; text-align: center; padding: 12px 8px; border-radius: 8px; font-size: 0.75rem; }
-        .leitner-box .box-count { font-size: 1.3rem; font-weight: bold; display: block; margin-bottom: 4px; }
-        .leitner-box .box-label { opacity: 0.9; }
+        .leitner-boxes { display: flex; justify-content: space-between; gap: 4px; margin-bottom: 15px; flex-wrap: wrap; }
+        .leitner-box { flex: 1 1 18%; min-width: 50px; text-align: center; padding: 8px 4px; border-radius: 8px; font-size: 0.7rem; }
+        .leitner-box .box-count { font-size: 1.1rem; font-weight: bold; display: block; margin-bottom: 2px; }
+        .leitner-box .box-label { opacity: 0.9; font-size: 0.65rem; }
+        @media (max-width: 400px) {
+            .leitner-boxes { gap: 3px; }
+            .leitner-box { padding: 6px 2px; font-size: 0.6rem; }
+            .leitner-box .box-count { font-size: 0.95rem; }
+            .leitner-box .box-label { font-size: 0.55rem; }
+        }
         .box-1 { background: #fc8181; color: #fff; }
         .box-2 { background: #f6ad55; color: #fff; }
         .box-3 { background: #faf089; color: #744210; }
